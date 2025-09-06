@@ -9,14 +9,3 @@ class Secretaria(models.Model):
     def __str__(self):
         return self.nome
     
-    def EditarSecretaria(self):
-        return "editar Secretaria"
-    
-    def InserirSecretaria(self):
-        return "inserir Secretaria"
-    
-    def ExcluirSecretaria(self):
-        return "Excluir Secretaria"
-    
-    def VizualizarSecretaria(self):
-        return "Vizualizar Secretaria"
