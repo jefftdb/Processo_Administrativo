@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from secretaria.models import Secretaria
 from processo.models import Processo
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 
 class Pessoa(AbstractUser):
     cpf = models.CharField(max_length=11)
@@ -32,3 +34,4 @@ class PessoaProcesso(models.Model):
 
 
 Processo.pessoas = models.ManyToManyField(Pessoa, through=PessoaProcesso, related_name="processos")
+

@@ -36,12 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'pessoa',
+    'django.contrib.staticfiles',    
     'processo',
     'secretaria',
     'setor',
-    'endereco'
+    'endereco',
+    'pessoa.apps.PessoaConfig'
 ]
 
 MIDDLEWARE = [
