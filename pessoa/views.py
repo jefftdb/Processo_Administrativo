@@ -54,7 +54,7 @@ def criar_pessoa_processo(request):
             processo = get_object_or_404(Processo, id=dados.get("processo_id"))
 
             pp = PessoaProcesso.objects.create(
-                codigo=dados.get("codigo"),
+                codigo=PessoaProcesso.gerar_codigo_unico(),
                 pessoa=pessoa,
                 processo=processo,
                 data=timezone.now()
