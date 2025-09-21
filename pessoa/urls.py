@@ -8,4 +8,6 @@ urlpatterns = [
     path("<int:id>/editar/", views.editar_pessoa_processo, name="editar_pessoa_processo"),
     path("<int:id>/excluir/", views.excluir_pessoa_processo, name="excluir_pessoa_processo"),
     path("criar_pessoa",views.criar_pessoa,name="criar_pessoa"),
+    path("criar_funcionario",views.criar_funcionario,name="criar_funcionario"),
+    path("criar_admin",views.criar_funcionario,name="criar_admin"),
 ]

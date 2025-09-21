@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from .models import PessoaProcesso, Pessoa, Processo
+from .models import PessoaProcesso, Pessoa, Processo,Funcionario,Administrador
 from django.contrib.auth.models import Group
 
 
@@ -90,19 +90,54 @@ def excluir_pessoa_processo(request, id):
         pp = get_object_or_404(PessoaProcesso, id=id)
         pp.delete()
         return JsonResponse({"mensagem": "PessoaProcesso excluído com sucesso"})
-
+    
+@csrf_exempt
 def criar_pessoa(request):
     if request.method == "POST":
         try:
             dados = json.loads(request.body.decode("utf-8"))
             
-            pessoa = Pessoa.objects.create_user(username=dados.username, password=dados.password,
-                                                first_name=dados.first_name,last_name=dados.last_name,email=dados.email,
-                                                is_staff=True, is_superuser=True)
+            pessoa = Pessoa.objects.create_user(username=dados["username"], password=dados["password"],
+                                                first_name=dados["first_name"],last_name=dados["last_name"],email=dados["email"],
+                                                cpf=dados["cpf"],telefone=dados["telefone"],is_staff=True, is_superuser=True)
             grupo_pessoa = Group.objects.get(name='Pessoa')
             pessoa.groups.add(grupo_pessoa)
             
             
             return JsonResponse({"mensagem": "Usuário criado com sucesso!"})
+        except Exception as e:
+            return JsonResponse({"erro": str(e)}, status=400)
+        
+@csrf_exempt
+def criar_funcionario(request):
+    if request.method == "POST":
+        try:
+            dados = json.loads(request.body.decode("utf-8"))
+            
+            funcionario = Funcionario.objects.create_user(username=dados["username"], password=dados["password"],
+                                                first_name=dados["first_name"],last_name=dados["last_name"],email=dados["email"],
+                                                cpf=dados["cpf"],telefone=dados["telefone"],is_staff=True, is_superuser=True)
+            grupo_pessoa = Group.objects.get(name='Funcionario')
+            funcionario.groups.add(grupo_pessoa)
+            
+            
+            return JsonResponse({"mensagem": "Funcionário criado com sucesso!"})
+        except Exception as e:
+            return JsonResponse({"erro": str(e)}, status=400)
+        
+@csrf_exempt
+def criar_admin(request):
+    if request.method == "POST":
+        try:
+            dados = json.loads(request.body.decode("utf-8"))
+            
+            administrador = Administrador.objects.create_user(username=dados["username"], password=dados["password"],
+                                                first_name=dados["first_name"],last_name=dados["last_name"],email=dados["email"],
+                                                cpf=dados["cpf"],telefone=dados["telefone"],is_staff=True, is_superuser=True)
+            grupo_pessoa = Group.objects.get(name='Administrador')
+            administrador.groups.add(grupo_pessoa)
+            
+            
+            return JsonResponse({"mensagem": "Administrador criado com sucesso!"})
         except Exception as e:
             return JsonResponse({"erro": str(e)}, status=400)
