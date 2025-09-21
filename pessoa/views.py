@@ -1,7 +1,91 @@
-from django.shortcuts import render
-from pessoa.models import Pessoa
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from .models import PessoaProcesso, Pessoa, Processo
 
-from django.http import HttpResponse
 
-def minha_view(request):
-    return HttpResponse("Olá do Django!")
+def listar_pessoa_processos(request):
+    dados = []
+    for pp in PessoaProcesso.objects.select_related("pessoa", "processo"):
+        dados.append({
+            "id": pp.id,
+            "codigo": pp.codigo,
+            "pessoa": {
+                "id": pp.pessoa.id,
+                "username": pp.pessoa.username,
+                "cpf": pp.pessoa.cpf,
+            },
+            "processo": {
+                "id": pp.processo.id,
+                "titulo": pp.processo.titulo,
+            },
+            "data": pp.data,
+        })
+    return JsonResponse(dados, safe=False)
+
+def visualizar_pessoa_processo(request, id):
+    pp = get_object_or_404(PessoaProcesso.objects.select_related("pessoa", "processo"), id=id)
+    return JsonResponse({
+        "id": pp.id,
+        "codigo": pp.codigo,
+        "pessoa": {
+            "id": pp.pessoa.id,
+            "username": pp.pessoa.username,
+            "cpf": pp.pessoa.cpf,
+        },
+        "processo": {
+            "id": pp.processo.id,
+            "titulo": pp.processo.titulo,
+        },
+        "data": pp.data,
+    })
+
+
+@csrf_exempt
+def criar_pessoa_processo(request):
+    if request.method == "POST":
+        try:
+            dados = json.loads(request.body.decode("utf-8"))
+            
+            pessoa = get_object_or_404(Pessoa, id=dados.get("pessoa_id"))
+            processo = get_object_or_404(Processo, id=dados.get("processo_id"))
+
+            pp = PessoaProcesso.objects.create(
+                codigo=dados.get("codigo"),
+                pessoa=pessoa,
+                processo=processo,
+                data=timezone.now()
+            )
+
+            return JsonResponse({"id": pp.id, "mensagem": "PessoaProcesso criado com sucesso"})
+        except Exception as e:
+            return JsonResponse({"erro": str(e)}, status=400)
+
+
+@csrf_exempt
+def editar_pessoa_processo(request, id):
+    if request.method == "PUT":
+        try:
+            pp = get_object_or_404(PessoaProcesso, id=id)
+            dados = json.loads(request.body.decode("utf-8"))
+
+            if "codigo" in dados:
+                pp.codigo = dados["codigo"]
+            if "pessoa_id" in dados:
+                pp.pessoa = get_object_or_404(Pessoa, id=dados["pessoa_id"])
+            if "processo_id" in dados:
+                pp.processo = get_object_or_404(Processo, id=dados["processo_id"])
+            
+            pp.save()
+            return JsonResponse({"mensagem": "PessoaProcesso atualizado com sucesso"})
+        except Exception as e:
+            return JsonResponse({"erro": str(e)}, status=400)
+
+@csrf_exempt
+def excluir_pessoa_processo(request, id):
+    if request.method == "DELETE":
+        pp = get_object_or_404(PessoaProcesso, id=id)
+        pp.delete()
+        return JsonResponse({"mensagem": "PessoaProcesso excluído com sucesso"})

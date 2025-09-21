@@ -1,24 +1,64 @@
-from django.shortcuts import render,HttpResponse
-from processo.models import Processo
-from django.contrib import messages
-from datetime import datetime
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from .models import Processo
+from datetime import datetime as time
+from pessoa.models import PessoaProcesso,Pessoa
 
-def vizualizarProcesso(request):
-    processo = Processo()
-    processo.titulo = "primeiro teste"
-    processo.descricao = 'primiro teste concluido'
-    
-    return HttpResponse(f"Titulo = {processo.titulo}  Descrição={processo.descricao}")
+def listar_processos(request):
+    processos = Processo.objects.all().values()
+    return JsonResponse(list(processos), safe=False)
 
-def add_processo(request):
-    
-    if request.method == 'POST':
-        titulo= request.POST.get('titulo')
-        descricao = request.POST.get('descricao')
-        data_criacao = datetime.now()
-        
-        Processo.objects.create(titulo=titulo,descricao =descricao,data_criacao=data_criacao)
-        messages.success(request, "Processo adicionada com sucesso!")
-    
-        return HttpResponse(messages)
-    return render(request,'processo/add_processo.html')
+
+def visualizar_processo(request, id):
+    processo = get_object_or_404(Processo, id=id)
+    #pp = PessoaProcesso.objects.first(processo = processo)
+    return JsonResponse({
+        "id": processo.id,
+        "titulo": processo.titulo,
+        "descricao": processo.descricao,
+        "data_criacao": processo.data_criacao,
+        "data_edicao": processo.data_edicao,
+        #"Código": pp.codigo,
+    })
+
+
+@csrf_exempt
+def criar_processo(request):
+    if request.method == "POST":
+        try:
+            dados = json.loads(request.body.decode("utf-8"))
+            processo = Processo.objects.create(
+                titulo=dados.get("titulo"),
+                descricao=dados.get("descricao"),
+                data_criacao=time.now()
+            )
+            return JsonResponse({"id": processo.id, "mensagem": "Processo criado com sucesso"})
+        except Exception as e:
+            return JsonResponse({"erro": str(e)}, status=400)
+
+
+@csrf_exempt
+def editar_processo(request, id):
+    if request.method == "PUT":
+        try:
+            processo = get_object_or_404(Processo, id=id)
+            dados = json.loads(request.body.decode("utf-8"))
+            
+            processo.titulo = dados.get("titulo", processo.titulo)
+            processo.descricao = dados.get("descricao", processo.descricao)
+            processo.data_edicao = time.now()
+            processo.save()
+
+            return JsonResponse({"mensagem": "Processo atualizado com sucesso"})
+        except Exception as e:
+            return JsonResponse({"erro": str(e)}, status=400)
+
+
+@csrf_exempt
+def excluir_processo(request, id):
+    if request.method == "DELETE":
+        processo = get_object_or_404(Processo, id=id)
+        processo.delete()
+        return JsonResponse({"mensagem": "Processo excluído com sucesso"})
