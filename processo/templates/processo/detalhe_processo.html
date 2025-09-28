@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Detalhes do Processo</h2>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h4 class="card-title">{{ processo.titulo }}</h4>
+            <p><strong>Código:</strong> {{ pessoaProcesso.codigo }}</p>
+            <p><strong>Descrição:</strong> {{ processo.descricao }}</p>
+            <p><strong>Data de Criação:</strong> {{ processo.data_criacao }}</p>
+            <p><strong>Funcionário:</strong> {{pessoaProcesso.pessoa.first_name }} {{pessoaProcesso.pessoa.last_name }}</p>
+            {% if processo.data_edicao %}
+                <p><strong>Última Edição:</strong> {{ processo.data_edicao }}</p>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'lista_processos' %}" class="btn btn-secondary mt-3">Voltar</a>
+</div>
+{% endblock %}

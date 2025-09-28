@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Processo, PessoaProcesso
 from pessoa.models import Funcionario
 from django.contrib import messages
-from datetime import date
+from datetime import datetime
 
 def listar_processos(request):
     processos = Processo.objects.all()
@@ -13,17 +13,21 @@ def adicionar_processo(request):
     if request.method == "POST":
         titulo = request.POST['titulo']
         descricao = request.POST['descricao']
-        pessoa_id = request.POST['funcionario']
+        funcionario_id = request.POST['funcionario']
+        funcionario = Funcionario.objects.get(id = funcionario_id)
         
         processo = Processo.objects.create(
             titulo=titulo,
             descricao=descricao
         )
 
-        PessoaProcesso.objects.create(
-            pessoa_id=pessoa_id,
-            processo=processo
+        pessoaProcesso = PessoaProcesso.objects.create(
+            codigo = "",
+            pessoa=funcionario,
+            processo=processo,
+            data = datetime.now()
         )
+        pessoaProcesso.gerar_codigo_unico(),
         messages.success(request, "Processo adicionado com sucesso!")
         return redirect('lista_processos')
 
@@ -46,3 +50,8 @@ def excluir_processo(request, id):
     processo.delete()
     messages.success(request, "Processo excluído com sucesso!")
     return redirect('lista_processos')
+
+def detalhe_processo(request, id):
+    processo = get_object_or_404(Processo, id=id)
+    pessoaProcesso = get_object_or_404(PessoaProcesso,processo = processo)
+    return render(request, 'processo/detalhe_processo.html', {'processo': processo, 'pessoaProcesso' : pessoaProcesso})
