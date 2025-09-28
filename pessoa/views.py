@@ -2,24 +2,33 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from .models import Pessoa, Funcionario, Administrador
 from .forms import PessoaForm, FuncionarioForm, AdministradorForm
+from django.contrib.auth.models import Group
+
 
 # ---------------------- PESSOA ----------------------
 def lista_pessoa(request):
     pessoas = Pessoa.objects.all()
     return render(request, 'pessoa/lista_pessoa.html', {'pessoas': pessoas})
 
+
 def add_pessoa(request):
     if request.method == 'POST':
         form = PessoaForm(request.POST)
         if form.is_valid():
             pessoa = form.save(commit=False)
-            pessoa.set_password(form.cleaned_data['password'])  # salva senha criptografada
+            pessoa.set_password(form.cleaned_data['password'])  # senha criptografada
             pessoa.save()
+
+            # Adicionar ao grupo "Pessoa"
+            grupo = Group.objects.get(name="Pessoa")
+            pessoa.groups.add(grupo)
+
             messages.success(request, "Pessoa adicionada com sucesso!")
             return redirect('lista_pessoa')
     else:
         form = PessoaForm()
     return render(request, 'pessoa/add_pessoa.html', {'form': form})
+
 
 def editar_pessoa(request, id):
     pessoa = get_object_or_404(Pessoa, id=id)
@@ -55,11 +64,17 @@ def add_funcionario(request):
             funcionario = form.save(commit=False)
             funcionario.set_password(form.cleaned_data['password'])
             funcionario.save()
+
+            # Adicionar ao grupo "Funcionario"
+            grupo = Group.objects.get(name="Funcionario")
+            funcionario.groups.add(grupo)
+
             messages.success(request, "Funcionário adicionado com sucesso!")
             return redirect('lista_funcionario')
     else:
         form = FuncionarioForm()
     return render(request, 'funcionario/add_funcionario.html', {'form': form})
+
 
 def editar_funcionario(request, id):
     funcionario = get_object_or_404(Funcionario, id=id)
@@ -95,11 +110,17 @@ def add_administrador(request):
             admin = form.save(commit=False)
             admin.set_password(form.cleaned_data['password'])
             admin.save()
+
+            # Adicionar ao grupo "Administrador"
+            grupo = Group.objects.get(name="Administrador")
+            admin.groups.add(grupo)
+
             messages.success(request, "Administrador adicionado com sucesso!")
             return redirect('lista_administrador')
     else:
         form = AdministradorForm()
     return render(request, 'administrador/add_administrador.html', {'form': form})
+
 
 def editar_administrador(request, id):
     admin = get_object_or_404(Administrador, id=id)

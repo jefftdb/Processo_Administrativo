@@ -26,8 +26,16 @@
             <td>{{ processo.data_criacao }}</td>
             <td>{{ processo.data_edicao|default:"-" }}</td>
             <td>
-                <a class="btn btn-warning btn-sm" href="{% url 'editar_processo' processo.id %}">Editar</a>
-                <a class="btn btn-danger btn-sm" href="{% url 'excluir_processo' processo.id %}">Excluir</a>
+                {% if user.is_authenticated %}
+                    {% if user.groups.all.0.name == "Pessoa" %}
+                        <a class="btn btn-info btn-sm" href="{% url 'editar_processo' processo.id %}">Vizualizar</a>
+                            {% elif user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Funcionario"  %}
+                                <a class="btn btn-info btn-sm" href="{% url 'editar_processo' processo.id %}">Vizualizar</a>
+                                <a class="btn btn-warning btn-sm" href="{% url 'editar_processo' processo.id %}">Editar</a>
+                                <a class="btn btn-danger btn-sm" href="{% url 'excluir_processo' processo.id %}">Excluir</a>
+                            {% endif %}
+                    {% endif %}
+                
             </td>
         </tr>
         {% endfor %}

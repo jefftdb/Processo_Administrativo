@@ -1,12 +1,15 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # Pessoa
-    path('pessoas/', views.lista_pessoa, name='lista_pessoa'),
-    path('pessoas/adicionar/', views.add_pessoa, name='add_pessoa'),
-    path('pessoas/editar/<int:id>/', views.editar_pessoa, name='editar_pessoa'),
-    path('pessoas/excluir/<int:id>/', views.excluir_pessoa, name='excluir_pessoa'),
+    path('', views.lista_pessoa, name='lista_pessoa'),
+    path('adicionar/', views.add_pessoa, name='add_pessoa'),
+    path('editar/<int:id>/', views.editar_pessoa, name='editar_pessoa'),
+    path('excluir/<int:id>/', views.excluir_pessoa, name='excluir_pessoa'),
+    path("login/", auth_views.LoginView.as_view(template_name="registration/login.html"), name="login"),
+    path("logout/", auth_views.LogoutView.as_view(template_name="registration/logged_out.html"), name="logout"),
 
     # Funcionario
     path('funcionarios/', views.lista_funcionario, name='lista_funcionario'),
