@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Processo, PessoaProcesso
 from pessoa.models import Funcionario
 from django.contrib import messages
-from datetime import datetime
+from datetime import date
 
 def listar_processos(request):
     processos = Processo.objects.all()
@@ -25,7 +25,7 @@ def adicionar_processo(request):
             codigo = "",
             pessoa=funcionario,
             processo=processo,
-            data = datetime.now()
+            data = date.today()
         )
         pessoaProcesso.gerar_codigo_unico(),
         messages.success(request, "Processo adicionado com sucesso!")
