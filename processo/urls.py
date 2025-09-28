@@ -1,10 +1,9 @@
 from django.urls import path
-from processo import views
+from . import views
 
 urlpatterns = [
-    path("", views.listar_processos, name="listar_processos"),
-    path("<int:id>", views.visualizar_processo, name="visualizar_processo"),
-    path("criar/", views.criar_processo, name="criar_processo"),
-    path("<int:id>/editar/", views.editar_processo, name="editar_processo"),
-    path("<int:id>/excluir/", views.excluir_processo, name="excluir_processo"),
+    path('', views.listar_processos, name='lista_processos'),
+    path('adicionar/', views.adicionar_processo, name='adicionar_processo'),
+    path('editar/<int:id>/', views.editar_processo, name='editar_processo'),
+    path('excluir/<int:id>/', views.excluir_processo, name='excluir_processo'),
 ]

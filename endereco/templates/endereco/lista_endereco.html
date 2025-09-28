@@ -1,0 +1,14 @@
+<h1>Lista de Endereços</h1>
+<a href="{% url 'add_endereco' %}">Adicionar Endereço</a>
+<ul>
+    {% for endereco in enderecos %}
+        <li>
+            {{ endereco.rua }}, {{ endereco.numero }} - {{ endereco.bairro }} - {{ endereco.cidade }}/{{ endereco.uf }} - {{ endereco.pais }}
+            <br>
+            Funcionário: {{ endereco.funcionario.username }} | Secretaria: {{ endereco.secretaria.nome }}
+            <br>
+            <a href="{% url 'editar_endereco' endereco.id %}">Editar</a>
+            <a href="{% url 'excluir_endereco' endereco.id %}">Excluir</a>
+        </li>
+    {% endfor %}
+</ul>

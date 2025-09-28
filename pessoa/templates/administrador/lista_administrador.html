@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Listar Administradores{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'add_administrador' %}">Adicionar Administrador</a>
+<ul>
+    {% for administrador in administradores %}
+        <li>
+            {{ administrador.username }} - {{ administrador.secretaria.nome }}
+            <a href="{% url 'editar_administrador' administrador.id %}">Editar</a>
+            <a href="{% url 'excluir_administrador' administrador.id %}">Excluir</a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

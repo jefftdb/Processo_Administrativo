@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Administrador{% endblock %}
+
+{% block content %}
+
+<h1>Editar Administrador - {{ administrador.username }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Atualizar</button>
+</form>
+<a href="{% url 'lista_administrador' %}">Voltar</a>
+{% endblock %}

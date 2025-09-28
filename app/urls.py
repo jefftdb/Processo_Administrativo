@@ -22,5 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('pessoa/',include('pessoa.urls')),
     path('processo/',include('processo.urls')),
-    path('secretaria/',include('secretaria.urls'))
+    path('secretaria/',include('secretaria.urls')),
+    path('setor/',include('setor.urls')),
+    path('endereco/',include('endereco.urls'))
 ]

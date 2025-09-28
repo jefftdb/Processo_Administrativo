@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Funcionário{% endblock %}
+
+{% block content %}
+
+
+<h1>Editar Funcionário - {{ funcionario.username }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Atualizar</button>
+</form>
+<a href="{% url 'lista_funcionario' %}">Voltar</a>
+{% endblock %}

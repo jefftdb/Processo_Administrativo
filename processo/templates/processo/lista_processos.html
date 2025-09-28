@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Processos{% endblock %}
+
+{% block content %}
+<h2>Lista de Processos</h2>
+<a class="btn btn-primary mb-3" href="{% url 'adicionar_processo' %}">Adicionar Processo</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descrição</th>
+            <th>Data Criação</th>
+            <th>Última Edição</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for processo in processos %}
+        <tr>
+            <td>{{ processo.id }}</td>
+            <td>{{ processo.titulo }}</td>
+            <td>{{ processo.descricao }}</td>
+            <td>{{ processo.data_criacao }}</td>
+            <td>{{ processo.data_edicao|default:"-" }}</td>
+            <td>
+                <a class="btn btn-warning btn-sm" href="{% url 'editar_processo' processo.id %}">Editar</a>
+                <a class="btn btn-danger btn-sm" href="{% url 'excluir_processo' processo.id %}">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

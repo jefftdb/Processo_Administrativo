@@ -11,8 +11,8 @@ class Endereco(models.Model):
     pais = models.CharField(max_length=20)
     numero =models.CharField(max_length=10)
     cep = models.CharField(max_length=10)
-    funcionario = models.ForeignKey(Funcionario,on_delete=models.CASCADE,related_name="endereco_funcionario")
-    secretaria = models.ForeignKey(Secretaria,on_delete=models.CASCADE,related_name="endereco_secretaria")
+    funcionario = models.ForeignKey(Funcionario,on_delete=models.CASCADE,related_name="endereco_funcionario",null=True, blank=True)
+    secretaria = models.ForeignKey(Secretaria,on_delete=models.CASCADE,related_name="endereco_secretaria",null=True, blank=True)
 
     def __str__(self):
         return f'Endereço de {self.funcionario.first_name}'

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Adicionar Processo{% endblock %}
+
+{% block content %}
+
+<h2>Adicionar Processo</h2>
+<form method="post">
+  {% csrf_token %}
+  <label>Título:</label>
+  <input type="text" name="titulo"><br>
+  <label>Descrição:</label>
+  <textarea name="descricao"></textarea><br>
+  <label>Pessoa vinculada:</label>
+  <select name="funcionario">
+    {% for funcionario in funcionarios %}
+      <option value="{{ funcionario.id }}">{{ funcionario.username }}</option>
+    {% endfor %}
+  </select><br>
+  <button type="submit">Salvar</button>
+</form>
+{% endblock %}
