@@ -19,10 +19,11 @@ class Processo(models.Model):
 
 
 class PessoaProcesso(models.Model):
-    codigo = models.CharField(max_length=6, unique=True, editable=False)
+    codigo = models.CharField(max_length=6)
     pessoa = models.ForeignKey(Pessoa, on_delete=models.CASCADE)
     processo = models.ForeignKey(Processo, on_delete=models.CASCADE)
-    data = models.DateField(auto_now_add=True)
+    data_inicio = models.DateField(auto_now_add=True)
+    data_termino = models.DateField(null=True)
 
     def save(self, *args, **kwargs):
         if not self.codigo:
@@ -38,7 +39,7 @@ class PessoaProcesso(models.Model):
                 return codigo
 
     def __str__(self):
-        return f"{self.processo} -> {self.pessoa} ({self.data})"
+        return f"{self.processo} -> {self.pessoa} ({self.data_inicio})"
 
 
 

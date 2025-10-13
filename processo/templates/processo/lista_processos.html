@@ -1,44 +1,118 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Lista de Processos{% endblock %}
 
 {% block content %}
 <h2>Lista de Processos</h2>
+        <!-- Form 1: Simple Elegant Search -->
+        <div class="form-container">            
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-group mb-3 shadow-sm rounded-pill overflow-hidden">
+                    <input type="text" class="form-control border-0 py-3 px-4" name="palavra" placeholder="Pesquisa" aria-label="Search term">
+                    <button class="btn btn-primary px-4 search-btn" type="submit">
+                        <img src="{% static "icons/search.svg" %}" class="bi bi-search animated-icon"></img>
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        
 <a class="btn btn-primary mb-3" href="{% url 'adicionar_processo' %}">Adicionar Processo</a>
 
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Descrição</th>
+            <th>Código</th>
+            <th>Título</th>            
             <th>Data Criação</th>
             <th>Última Edição</th>
             <th>Ações</th>
         </tr>
     </thead>
     <tbody>
-        {% for processo in processos %}
-        <tr>
-            <td>{{ processo.id }}</td>
-            <td>{{ processo.titulo }}</td>
-            <td>{{ processo.descricao }}</td>
-            <td>{{ processo.data_criacao }}</td>
-            <td>{{ processo.data_edicao|default:"-" }}</td>
-            <td>
-                {% if user.is_authenticated %}
-                    {% if user.groups.all.0.name == "Pessoa" %}
-                        <a class="btn btn-info btn-sm" href="{% url 'editar_processo' processo.id %}">Vizualizar</a>
-                            {% elif user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Funcionario"  %}
-                                <a class="btn btn-info btn-sm" href="{% url 'detalhe_processo' processo.id %}">Visualizar</a>
-                                <a class="btn btn-warning btn-sm" href="{% url 'editar_processo' processo.id %}">Editar</a>
-                                <a class="btn btn-danger btn-sm" href="{% url 'excluir_processo' processo.id %}">Excluir</a>
-                            {% endif %}
-                    {% endif %}
-                
-            </td>
-        </tr>
+        {% for processo in page_obj %}
+          <td>{{ processo.codigo }}</td>
+          <td>{{ processo.processo.titulo }}</td>
+          <td>{{ processo.processo.data_criacao }}</td>
+          <td>{{ processo.processo.data_edicao|default:"-" }}</td>
+      
+              <td>
+                  {% if user.is_authenticated %}
+                      {% if user.groups.all.0.name == "Pessoa" %}                       
+                            
+                                  <a class="btn btn-info btn-sm redondo" href="{% url 'detalhe_processo' processo.processo.id %}">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                          <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                                          <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+                                      </svg>
+                                  </a>
+                                  {% elif user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Funcionario"  %}
+                                                                                            
+                                  <a class="btn btn-info btn-sm redondo" href="{% url 'detalhe_processo' processo.processo.id %}">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                          <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                                          <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+                                      </svg>
+                                  </a>
+
+                                  <a class="btn btn-warning btn-sm redondo" href="{% url 'editar_processo' processo.processo.id %}">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                      </svg>
+                                  </a>
+
+                                  
+                                  <a class="btn btn-danger btn-sm redondo" href="{% url 'excluir_processo' processo.processo.id %}">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                          <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                                      </svg>
+                                  </a>
+                              {% endif %}
+                      {% endif %}
+                  
+              </td>
+          </tr>
+          
         {% endfor %}
     </tbody>
 </table>
+
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+          &laquo; Voltar
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&laquo; Voltar</span>
+      </li>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+          Próximo &raquo;
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">Próximo &raquo;</span>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+
 {% endblock %}
