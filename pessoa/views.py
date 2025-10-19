@@ -3,6 +3,7 @@ from django.contrib import messages
 from .models import Pessoa, Funcionario, Administrador
 from .forms import PessoaForm, FuncionarioForm, AdministradorForm
 from django.contrib.auth.models import Group
+from django.http import JsonResponse
 
 
 # ---------------------- PESSOA ----------------------
@@ -53,6 +54,13 @@ def excluir_pessoa(request, id):
 
 
 # ---------------------- FUNCIONARIO ----------------------
+
+def buscar_funcionarios(request):
+    termo = request.GET.get('q', '')
+    funcionarios = Funcionario.objects.filter(username__icontains=termo)[:10]
+    data = [{'id': f.id, 'username': f.username} for f in funcionarios]
+    return JsonResponse(data, safe=False)
+
 def lista_funcionario(request):
     funcionarios = Funcionario.objects.all()
     return render(request, 'funcionario/lista_funcionario.html', {'funcionarios': funcionarios})

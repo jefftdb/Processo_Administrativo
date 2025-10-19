@@ -8,6 +8,10 @@ from django.db.models import Q, Max
 from django.shortcuts import render
 from .models import PessoaProcesso
 
+
+def home(request):
+    return render(request, 'home.html')
+
 def listar_processos(request):
     # Base inicial: últimos registros de cada processo
     processos_query = (
@@ -68,7 +72,9 @@ def editar_processo(request, id):
     processo = get_object_or_404(Processo, id=id)    
     funcionarios = Funcionario.objects.all()
     if request.method == "POST":
-        pessoaProcesso = PessoaProcesso.objects.filter(processo=processo).order_by('data_inicio').first()
+        pessoaProcesso = PessoaProcesso.objects.filter(processo=processo).order_by('id').last()
+        pessoaProcesso.data_termino = date.today()
+        pessoaProcesso.save()
                     
         funcionario_id = request.POST['funcionario']
         funcionario = Funcionario.objects.get(id = funcionario_id)
@@ -84,7 +90,7 @@ def editar_processo(request, id):
             codigo = pessoaProcesso.codigo,
             pessoa=funcionario,
             processo=processo,
-            data_inicio = date.today()
+            data_inicio = date.today(),
         )
         messages.success(request, "Processo atualizado com sucesso!")
         return redirect('lista_processos')

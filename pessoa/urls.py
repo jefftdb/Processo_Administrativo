@@ -16,6 +16,7 @@ urlpatterns = [
     path('funcionarios/adicionar/', views.add_funcionario, name='add_funcionario'),
     path('funcionarios/editar/<int:id>/', views.editar_funcionario, name='editar_funcionario'),
     path('funcionarios/excluir/<int:id>/', views.excluir_funcionario, name='excluir_funcionario'),
+    path('buscar-funcionarios/', views.buscar_funcionarios, name='buscar_funcionarios'),
 
     # Administrador
     path('administradores/', views.lista_administrador, name='lista_administrador'),
