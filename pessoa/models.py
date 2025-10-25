@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 
 class Pessoa(AbstractUser):
     cpf = models.CharField(max_length=11, unique=True)
+    email = models.CharField(unique=True)
     telefone = models.CharField(max_length=11)
     
     def __str__(self):

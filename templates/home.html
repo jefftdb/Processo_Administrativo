@@ -8,12 +8,8 @@
     <p class="text-secondary mb-4 fs-5">
         Gerencie e acompanhe processos administrativos de forma simples, segura e eficiente.
     </p>
-    <img src="{% static 'logo.jpeg' %}" alt="Processos" class="img-fluid mb-4" style="max-width: 400px;">
+    <img src="{% static 'logo.jpeg' %}" alt="Processos" class="img-fluid mb-4" style="max-width:100%;">
 
-    {% if user.is_authenticated %}
-        <a href="{% url 'lista_processos' %}" class="btn btn-primary btn-lg px-5 py-3 shadow-sm">Ver Processos</a>
-    {% else %}
-        <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-5 py-3 shadow-sm">Entrar no Sistema</a>
-    {% endif %}
+
 </div>
 {% endblock %}

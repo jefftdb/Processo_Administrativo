@@ -1,12 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 20px;">
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">    
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 500px; border-radius: 20px;">
         <div class="text-center mb-4">
-            <h3 class="fw-bold text-primary">Acessar Sistema</h3>
-            <p class="text-secondary">Insira suas credenciais abaixo</p>
+            <img src="{% static 'logo.png' %}" alt="Processos" class="img-fluid mb-4" style="max-width:100%;">            
         </div>
 
         <form method="post">
@@ -22,6 +22,9 @@
 
             <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Entrar</button>
         </form>
+        <div class="text-center mb-4">
+             <p class="text-secondary">Esqueceu sua senha? <a href="#">Clique aqui</a></p>
+        </div>
     </div>
 </div>
 {% endblock %}
