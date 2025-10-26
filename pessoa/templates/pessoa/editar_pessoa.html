@@ -8,7 +8,7 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Atualizar</button>
+    <button class="btn btn-primary mb-3" type="submit">Atualizar</button>
 </form>
-<a href="{% url 'lista_pessoa' %}">Voltar</a>
+
 {% endblock %}

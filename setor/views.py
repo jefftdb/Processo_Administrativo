@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
 from django.contrib import messages
 from .models import Setor
 from setor.forms import SetorForm 
@@ -11,14 +12,23 @@ def lista_setor(request):
 # Adiciona setor
 def add_setor(request):
     if request.method == 'POST':
-        form = SetorForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Setor adicionado com sucesso!")
-            return redirect('lista_setor')
-    else:
-        form = SetorForm()
-    return render(request, 'setor/add_setor.html', {'form': form})
+        nome = request.POST.get('nome', '').strip()
+
+        if not nome:
+            return JsonResponse({'status': 'error', 'message': 'O nome do setor é obrigatório.'})
+
+        if Setor.objects.filter(nome__iexact=nome).exists():
+            return JsonResponse({'status': 'warning', 'message': 'Já existe um setor com esse nome.'})
+
+        setor = Setor.objects.create(nome=nome)
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Setor adicionado com sucesso!',
+            'id': setor.id,
+            'nome': setor.nome
+        })
+
+    return JsonResponse({'status': 'error', 'message': 'Método inválido.'})
 
 # Edita setor
 def editar_setor(request, id):

@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Adicionar Pessoa{% endblock %}
+{% block title %}Cadastrar{% endblock %}
 
 {% block content %}
 
-<h1>Adicionar Pessoa</h1>
+<h1>Cadastro: </h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Salvar</button>
+    <button class="btn btn-primary mb-3" type="submit">Salvar</button>
 </form>
-<a href="{% url 'lista_pessoa' %}">Voltar</a>
 
 {% endblock %}

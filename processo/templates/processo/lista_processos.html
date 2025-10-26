@@ -3,7 +3,7 @@
 {% block title %}Lista de Processos{% endblock %}
 
 {% block content %}
-<h2>Lista de Processos</h2>
+
         <!-- Form 1: Simple Elegant Search -->
         <div class="form-container">            
             <form method="post">
@@ -17,11 +17,13 @@
             </form>
         </div>
         
-        
-<a class="btn btn-primary mb-3" href="{% url 'adicionar_processo' %}">Adicionar Processo</a>
-
+{% if user.is_authenticated %}
+  {% if user.groups.all.0.name == "Funcionario" or user.groups.all.0.name == "Administrador" %}         
+    <a class="btn btn-primary mb-3" href="{% url 'adicionar_processo' %}">Adicionar Processo</a>
+  {% endif %}
+{% endif %}
 <table class="table table-bordered">
-    <thead>
+    <thead class="table-primary">
         <tr>
             <th>Código</th>
             <th>Título</th>            

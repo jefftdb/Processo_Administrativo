@@ -57,3 +57,7 @@
  .navbar svg {
      margin-right: 2px;
  }
+
+ table tbody td {
+     text-align: center;
+ }

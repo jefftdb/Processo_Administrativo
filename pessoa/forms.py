@@ -18,7 +18,7 @@ class PessoaForm(forms.ModelForm):
 class FuncionarioForm(forms.ModelForm):
     class Meta:
         model = Funcionario
-        fields = ['first_name', 'last_name', 'username', 'email', 'cpf', 'telefone', 'password', 'secretaria']
+        fields = ['first_name', 'last_name', 'username', 'email', 'cpf', 'telefone','password','setor',  'secretaria']
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -28,12 +28,13 @@ class FuncionarioForm(forms.ModelForm):
             'telefone': forms.TextInput(attrs={'class': 'form-control'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control'}),
             'secretaria': forms.Select(attrs={'class': 'form-control'}),
+            'setor': forms.Select(attrs={'class': 'form-control'}),
         }
 
 class AdministradorForm(forms.ModelForm):
     class Meta:
         model = Administrador
-        fields = ['first_name', 'last_name', 'username', 'email', 'cpf', 'telefone', 'password', 'secretaria']
+        fields = ['first_name', 'last_name', 'username', 'email', 'cpf', 'telefone', 'password','setor', 'secretaria']
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -43,4 +44,5 @@ class AdministradorForm(forms.ModelForm):
             'telefone': forms.TextInput(attrs={'class': 'form-control'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control'}),
             'secretaria': forms.Select(attrs={'class': 'form-control'}),
+            'setor': forms.Select(attrs={'class': 'form-control'}),
         }
