@@ -25,7 +25,7 @@ def add_pessoa(request):
             pessoa.groups.add(grupo)
 
             messages.success(request, "Pessoa adicionada com sucesso!")
-            return redirect('lista_pessoa')
+            return redirect('login')
     else:
         form = PessoaForm()
     return render(request, 'pessoa/add_pessoa.html', {'form': form})
@@ -41,7 +41,7 @@ def editar_pessoa(request, id):
                 pessoa.set_password(form.cleaned_data['password'])
             pessoa.save()
             messages.success(request, "Pessoa atualizada com sucesso!")
-            return redirect('lista_pessoa')
+            return redirect('login')
     else:
         form = PessoaForm(instance=pessoa)
     return render(request, 'pessoa/editar_pessoa.html', {'form': form, 'pessoa': pessoa})
