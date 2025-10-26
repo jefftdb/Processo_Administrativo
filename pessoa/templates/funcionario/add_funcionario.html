@@ -1,14 +1,92 @@
 {% extends "base.html" %}
-
 {% block title %}Adicionar Funcionário{% endblock %}
-
+{% load static %}
 {% block content %}
 
 <h1>Adicionar Funcionário</h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Salvar</button>
+    
+    <!-- Botão que abre o modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSecretariaModal">
+        Adicionar Secretaria
+    </button>
+
+    <button type="submit" class="btn btn-success">Salvar Funcionário</button>
 </form>
+
 <a href="{% url 'lista_funcionario' %}">Voltar</a>
+
+<!-- Modal de adicionar secretaria -->
+<div class="modal fade" id="addSecretariaModal" tabindex="-1" aria-labelledby="addSecretariaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addSecretariaLabel">Nova Secretaria</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+            <label class="form-label">Nome da Secretaria:</label>
+            <input type="text" class="form-control" id="nomeSecretaria">
+        </div>
+        <div id="mensagemModal"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="salvarSecretaria" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script para enviar a secretaria via AJAX -->
+<script>
+document.getElementById("salvarSecretaria").addEventListener("click", function() {
+    const nome = document.getElementById("nomeSecretaria").value.trim();
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch("{% url 'add_secretaria' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrfToken
+        },
+        body: new URLSearchParams({ nome: nome })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const msgDiv = document.getElementById("mensagemModal");
+        msgDiv.innerHTML = `<div class="alert alert-${data.status === 'success' ? 'success' : data.status === 'warning' ? 'warning' : 'danger'}">${data.message}</div>`;
+
+        if (data.status === 'success') {
+            // limpa o campo e fecha o modal
+            document.getElementById("nomeSecretaria").value = "";
+
+            // adiciona nova opção no select (sem precisar atualizar a página)
+            const select = document.querySelector('select[name="secretaria"]');
+            if (select) {
+                const opt = document.createElement("option");
+                opt.value = data.id;
+                opt.textContent = data.nome;
+                opt.selected = true;
+                select.appendChild(opt);
+            }
+
+            // fecha o modal depois de 1 segundo
+            setTimeout(() => {
+                const modalElement = document.getElementById('addSecretariaModal');
+                let modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (!modalInstance) {
+                    modalInstance = new bootstrap.Modal(modalElement);
+                }
+                modalInstance.hide();
+            }, 1000);
+        }
+    })
+    .catch(err => console.error("Erro:", err));
+});
+</script>
+
+
 {% endblock %}

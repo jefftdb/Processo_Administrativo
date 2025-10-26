@@ -35,7 +35,7 @@
           <td>{{ processo.codigo }}</td>
           <td>{{ processo.processo.titulo }}</td>
           <td>{{ processo.processo.data_criacao }}</td>
-          <td>{{ processo.processo.data_edicao|default:"-" }}</td>
+          <td>{{ processo.processo.data_edicao|default:"Atual" }}</td>
       
               <td>
                   {% if user.is_authenticated %}

@@ -60,7 +60,7 @@ def adicionar_processo(request):
             codigo = "",
             pessoa=funcionario,
             processo=processo,
-            data = date.today()
+            data_inicio = date.today()
         )
         pessoaProcesso.gerar_codigo_unico(),
         messages.success(request, "Processo adicionado com sucesso!")

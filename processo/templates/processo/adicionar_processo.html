@@ -8,15 +8,82 @@
 <form method="post">
   {% csrf_token %}
   <label>Título:</label>
-  <input type="text" name="titulo"><br>
+  <input type="text" name="titulo" class="form-control" ><br>
+
   <label>Descrição:</label>
-  <textarea name="descricao"></textarea><br>
-  <label>Pessoa vinculada:</label>
-  <select name="funcionario">
-    {% for funcionario in funcionarios %}
-      <option value="{{ funcionario.id }}">{{ funcionario.username }}</option>
-    {% endfor %}
-  </select><br>
-  <button type="submit">Salvar</button>
+  <textarea class="form-control" name="descricao"></textarea><br>
+
+  <div class="mb-3" style="position: relative;">
+      <label for="funcionario_busca">Buscar Funcionário:</label>
+      <input type="text" id="funcionario_busca" class="form-control" placeholder="Digite o nome do funcionário..." autocomplete="off">
+      <input type="hidden" name="funcionario" id="funcionario_id">
+
+      <ul id="resultado_funcionarios" 
+          class="list-group mt-2" 
+          style="display: none; border: 1px solid #ccc; background: white; max-height: 200px; overflow-y: auto; position: absolute; z-index: 1000; width: 100%; top: 100%; left: 0;">
+      </ul>
+    </div>
+    </div>
+ <div class="text-center">
+  <button type="submit" class="btn btn-primary w-50 py-2 mt-2">Salvar</button>
+</div>
 </form>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const buscaInput = document.getElementById('funcionario_busca');
+  const lista = document.getElementById('resultado_funcionarios');
+
+  buscaInput.addEventListener('input', function() {
+    const termo = this.value.trim();
+    lista.innerHTML = ''; // limpa resultados anteriores
+
+    if (termo.length < 2) return; // só busca a partir de 2 letras
+
+    console.log("🔎 Buscando:", termo);
+
+    fetch(`/pessoa/buscar-funcionarios/?q=${encodeURIComponent(termo)}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log("📦 Retorno:", data);
+
+        if (data.length === 0) {
+          const vazio = document.createElement('li');
+          vazio.classList.add('list-group-item', 'text-muted');
+          vazio.textContent = 'Nenhum funcionário encontrado';
+          lista.appendChild(vazio);
+          lista.style.display = 'block';
+          return;
+        }
+
+        data.forEach(funcionario => {
+          const item = document.createElement('li');
+          item.classList.add('list-group-item', 'list-group-item-action');
+          item.textContent = funcionario.username;
+
+          item.addEventListener('click', () => {
+            buscaInput.value = funcionario.username;
+            document.getElementById('funcionario_id').value = funcionario.id;
+            lista.innerHTML = '';
+            lista.style.display = 'none';
+          });
+
+          lista.appendChild(item);
+        });
+
+        lista.style.display = 'block';
+      })
+      .catch(error => console.error('❌ Erro ao buscar funcionários:', error));
+  });
+
+  // Fecha lista ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#resultado_funcionarios') && e.target !== buscaInput) {
+      lista.innerHTML = '';
+      lista.style.display = 'none';
+    }
+  });
+});
+</script>
 {% endblock %}

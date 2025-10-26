@@ -2,25 +2,29 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from .models import Secretaria
 
+from django.http import JsonResponse
+from django.contrib import messages
+from .models import Secretaria
+
 def add_secretaria(request):
     if request.method == 'POST':
-        nome = request.POST.get('nome')        
-       
+        nome = request.POST.get('nome', '').strip()
+
         if not nome:
-            messages.error(request, "O nome da secretaria é obrigatório.")
-            return redirect('add_secretaria')
+            return JsonResponse({'status': 'error', 'message': 'O nome da secretaria é obrigatório.'})
 
-    
         if Secretaria.objects.filter(nome__iexact=nome).exists():
-            messages.warning(request, "Já existe uma secretaria com esse nome.")
-            return redirect('add_secretaria')
+            return JsonResponse({'status': 'warning', 'message': 'Já existe uma secretaria com esse nome.'})
 
-       
-        Secretaria.objects.create(nome=nome)
-        messages.success(request, "Secretaria adicionada com sucesso!")
-        return redirect('lista_secretaria') 
+        secretaria = Secretaria.objects.create(nome=nome)
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Secretaria adicionada com sucesso!',
+            'id': secretaria.id,
+            'nome': secretaria.nome
+        })
 
-    return render(request, 'secretaria/add_secretaria.html')
+    return JsonResponse({'status': 'error', 'message': 'Método inválido.'})
 
 def lista_secretaria(request):
     lista= Secretaria.objects.all()
