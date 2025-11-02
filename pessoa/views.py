@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Pessoa, Funcionario, Administrador
 from .forms import PessoaForm, FuncionarioForm, AdministradorForm
 from django.contrib.auth.models import Group
@@ -7,6 +8,7 @@ from django.http import JsonResponse
 
 
 # ---------------------- PESSOA ----------------------
+@login_required
 def lista_pessoa(request):
     pessoas = Pessoa.objects.all()
     return render(request, 'pessoa/lista_pessoa.html', {'pessoas': pessoas})
@@ -30,7 +32,7 @@ def add_pessoa(request):
         form = PessoaForm()
     return render(request, 'pessoa/add_pessoa.html', {'form': form})
 
-
+@login_required
 def editar_pessoa(request, id):
     pessoa = get_object_or_404(Pessoa, id=id)
     if request.method == 'POST':
@@ -46,6 +48,7 @@ def editar_pessoa(request, id):
         form = PessoaForm(instance=pessoa)
     return render(request, 'pessoa/editar_pessoa.html', {'form': form, 'pessoa': pessoa})
 
+@login_required
 def excluir_pessoa(request, id):
     pessoa = get_object_or_404(Pessoa, id=id)
     pessoa.delete()
@@ -54,13 +57,14 @@ def excluir_pessoa(request, id):
 
 
 # ---------------------- FUNCIONARIO ----------------------
-
+@login_required
 def buscar_funcionarios(request):
     termo = request.GET.get('q', '')
     funcionarios = Funcionario.objects.filter(username__icontains=termo)[:10]
     data = [{'id': f.id, 'username': f.username} for f in funcionarios]
     return JsonResponse(data, safe=False)
 
+@login_required
 def lista_funcionario(request):
     funcionarios = Funcionario.objects.all()
     return render(request, 'funcionario/lista_funcionario.html', {'funcionarios': funcionarios})
@@ -83,7 +87,7 @@ def add_funcionario(request):
         form = FuncionarioForm()
     return render(request, 'funcionario/add_funcionario.html', {'form': form})
 
-
+@login_required
 def editar_funcionario(request, id):
     funcionario = get_object_or_404(Funcionario, id=id)
     if request.method == 'POST':
@@ -99,6 +103,7 @@ def editar_funcionario(request, id):
         form = FuncionarioForm(instance=funcionario)
     return render(request, 'funcionario/editar_funcionario.html', {'form': form, 'funcionario': funcionario})
 
+@login_required
 def excluir_funcionario(request, id):
     funcionario = get_object_or_404(Funcionario, id=id)
     funcionario.delete()
@@ -107,10 +112,12 @@ def excluir_funcionario(request, id):
 
 
 # ---------------------- ADMINISTRADOR ----------------------
+@login_required
 def lista_administrador(request):
     administradores = Administrador.objects.all()
     return render(request, 'administrador/lista_administrador.html', {'administradores': administradores})
 
+@login_required
 def add_administrador(request):
     if request.method == 'POST':
         form = AdministradorForm(request.POST)
@@ -129,7 +136,7 @@ def add_administrador(request):
         form = AdministradorForm()
     return render(request, 'administrador/add_administrador.html', {'form': form})
 
-
+@login_required
 def editar_administrador(request, id):
     admin = get_object_or_404(Administrador, id=id)
     if request.method == 'POST':
@@ -145,6 +152,7 @@ def editar_administrador(request, id):
         form = AdministradorForm(instance=admin)
     return render(request, 'administrador/editar_administrador.html', {'form': form, 'administrador': admin})
 
+@login_required
 def excluir_administrador(request, id):
     admin = get_object_or_404(Administrador, id=id)
     admin.delete()

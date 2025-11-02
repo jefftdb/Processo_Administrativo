@@ -1,15 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import Setor
 from setor.forms import SetorForm 
 
-# Lista setores
+@login_required
 def lista_setor(request):
     setores = Setor.objects.all()
     return render(request, 'setor/lista_setor.html', {'setores': setores})
 
-# Adiciona setor
+@login_required
 def add_setor(request):
     if request.method == 'POST':
         nome = request.POST.get('nome', '').strip()
@@ -30,7 +31,7 @@ def add_setor(request):
 
     return JsonResponse({'status': 'error', 'message': 'Método inválido.'})
 
-# Edita setor
+@login_required
 def editar_setor(request, id):
     setor = get_object_or_404(Setor, id=id)
     if request.method == 'POST':
@@ -43,7 +44,7 @@ def editar_setor(request, id):
         form = SetorForm(instance=setor)
     return render(request, 'setor/editar_setor.html', {'form': form, 'setor': setor})
 
-# Exclui setor
+@login_required
 def excluir_setor(request, id):
     setor = get_object_or_404(Setor, id=id)
     setor.delete()

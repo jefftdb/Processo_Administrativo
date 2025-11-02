@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Processo, PessoaProcesso
 from pessoa.models import Funcionario
 from django.contrib import messages
@@ -12,6 +13,7 @@ from .models import PessoaProcesso
 def home(request):
     return render(request, 'home.html')
 
+@login_required
 def listar_processos(request):
     # Base inicial: últimos registros de cada processo
     processos_query = (
@@ -42,7 +44,7 @@ def listar_processos(request):
 
     return render(request, 'processo/lista_processos.html', {'page_obj': page_obj})
 
-
+@login_required
 def adicionar_processo(request):
     funcionarios = Funcionario.objects.all()
     if request.method == "POST":
@@ -68,6 +70,7 @@ def adicionar_processo(request):
 
     return render(request, 'processo/adicionar_processo.html', {'funcionarios': funcionarios})
 
+@login_required
 def editar_processo(request, id):
     processo = get_object_or_404(Processo, id=id)    
     funcionarios = Funcionario.objects.all()
@@ -96,12 +99,14 @@ def editar_processo(request, id):
         return redirect('lista_processos')
     return render(request, 'processo/editar_processo.html', {'processo': processo,'funcionarios': funcionarios})
 
+@login_required
 def excluir_processo(request, id):
     processo = get_object_or_404(Processo, id=id)
     processo.delete()
     messages.success(request, "Processo excluído com sucesso!")
     return redirect('lista_processos')
 
+@login_required
 def detalhe_processo(request, id):
     processo = get_object_or_404(Processo, id=id)
     pessoaProcesso = PessoaProcesso.objects.filter(processo = processo)

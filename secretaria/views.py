@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Secretaria
 
@@ -6,6 +7,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from .models import Secretaria
 
+@login_required
 def add_secretaria(request):
     if request.method == 'POST':
         nome = request.POST.get('nome', '').strip()
@@ -26,12 +28,14 @@ def add_secretaria(request):
 
     return JsonResponse({'status': 'error', 'message': 'Método inválido.'})
 
+@login_required
 def lista_secretaria(request):
     lista= Secretaria.objects.all()
   
     
     return render(request, 'secretaria/lista_secretaria.html', {'lista': lista})
 
+@login_required
 def excluir_secretaria(request,id):
     
     secretaria = get_object_or_404(Secretaria, id=id) 
@@ -39,6 +43,7 @@ def excluir_secretaria(request,id):
     messages.success(request, "Secretaria deletada com sucesso!")
     return redirect('lista_secretaria')
 
+@login_required
 def editar_secretaria(request,id):
     
     secretaria = get_object_or_404(Secretaria, id=id)
