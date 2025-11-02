@@ -138,3 +138,8 @@ LOGIN_URL = '/pessoa/login/'
 
 # Para onde redirecionar após logout
 LOGOUT_REDIRECT_URL = '/pessoa/login/'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',       
+    'app.backends.UsernameOrEmailBackend',  
+]
