@@ -21,6 +21,10 @@
   {% if user.groups.all.0.name == "Funcionario" or user.groups.all.0.name == "Administrador" %}         
     <a class="btn btn-primary mb-3" href="{% url 'adicionar_processo' %}">Adicionar Processo</a>
   {% endif %}
+
+   {% if user.groups.all.0.name == "Administrador" %}         
+    <a class="btn btn-primary mb-3" href="{% url 'add_administrador' %}">Adicionar Administrador</a>
+  {% endif %}
 {% endif %}
 <table class="table table-bordered">
     <thead class="table-primary">

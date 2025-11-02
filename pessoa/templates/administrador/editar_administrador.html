@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Adicionar administrador{% endblock %}
-{% load static %}
+
+{% block title %}Editar administrador{% endblock %}
+
 {% block content %}
 
-<h1>Adicionar administrador</h1>
+
+<h1>Editar administrador - {{ administrador.username }}</h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    
-    <!-- Botão setor modal -->
+   <!-- Botão setor modal -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSetorModal">
         Adicionar Setor
     </button>
