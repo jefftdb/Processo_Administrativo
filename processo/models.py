@@ -2,6 +2,8 @@ from django.db import models
 from pessoa.models import Pessoa
 import random, string
 from datetime import datetime, date
+from django.db.models import IntegerField
+from django.db.models.functions import Cast, Substr
 
 class Processo(models.Model):   
     titulo = models.CharField(max_length=100)
@@ -31,24 +33,24 @@ class PessoaProcesso(models.Model):
         super().save(*args, **kwargs)
 
     def gerar_codigo_unico(self):
-        ultimo_processo=PessoaProcesso.objects.all().order_by("codigo").last()
-        ultimo_codigo = ultimo_processo.codigo
-        
+
+
         ano_atual = datetime.now().year
 
-        if ultimo_codigo:
-            numero, ano = map(int, ultimo_codigo.split('/'))
-            if ano == ano_atual:
-                numero += 1
-            else:
-                numero = 1
+        processos_ano = PessoaProcesso.objects.filter(
+            codigo__endswith=f"/{ano_atual}"
+        )
+
+        ultimo_processo = processos_ano.annotate(
+            numero_int=Cast(Substr("codigo", 1, 5), IntegerField())
+        ).order_by("numero_int").last()
+
+        if ultimo_processo:
+            numero = ultimo_processo.numero_int + 1
         else:
             numero = 1
 
         return f"{numero}/{ano_atual}"
-
-    def __str__(self):
-        return f"{self.processo} -> {self.pessoa} ({self.data_inicio})"
 
 
 
